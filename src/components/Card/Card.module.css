@@ -1,0 +1,55 @@
+.cardContainer {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 60vw;
+	height: 77vh;
+}
+
+.cardBackground {
+	position: absolute;
+	width: 100%; /* Устанавливаем 100%, чтобы заполнить контейнер */
+	height: 100%;
+	border-radius: 10px;
+	background-color: #ffffff; /* Начальный цвет */
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+	transition: background-color 0.5s ease;
+	z-index: 1;
+}
+
+.card {
+	width: 100%;
+	height: 100%;
+	perspective: 1000px;
+	position: relative;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transform-style: preserve-3d;
+	transition: transform 0.5s;
+}
+
+.cardFront,
+.cardBack {
+	position: absolute;
+	width: 57.9vw; /* Задаем единые размеры контейнеру */
+	height: 72.5vh;
+	backface-visibility: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	transition: opacity 0.3s ease;
+}
+
+.cardBack {
+	transform: rotateY(180deg);
+	background-color: #e0e0e0;
+	text-align: center;
+	font-weight: bold;
+}
