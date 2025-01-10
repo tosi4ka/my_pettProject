@@ -8,11 +8,22 @@ export const Card: React.FC = () => {
 	const cardRef = useRef<HTMLDivElement>(null)
 	const backgroundRef = useRef<HTMLDivElement>(null)
 
+	const shuffleArray = (array: string[]) => {
+		const shuffled = [...array]
+		for (let i = shuffled.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1))
+			;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+		}
+		return shuffled
+	}
+
 	const [isFlipped, setIsFlipped] = useState(false)
 	const [bgColor, setBgColor] = useState('#ffffff')
-	const [content, setContent] = useState({ word: currentWord, options })
+	const [content, setContent] = useState({
+		word: currentWord,
+		options: shuffleArray(options),
+	})
 
-	// Пул цветов для фона карточки
 	const colorPool = [
 		'#FFC107',
 		'#FF5722',
@@ -22,19 +33,17 @@ export const Card: React.FC = () => {
 		'#3F51B5',
 	]
 
-	// Обновление содержимого и цвета фона при смене слова
 	useEffect(() => {
 		if (isGameOver) {
-			setBgColor('#f9f9f9') // Цвет фона при завершении игры
+			setBgColor('#f9f9f9')
 		} else if (isFlipped) {
-			setBgColor('#ffffff') // Цвет фона при выборе ответа
+			setBgColor('#ffffff')
 		} else {
-			setContent({ word: currentWord, options })
+			setContent({ word: currentWord, options: shuffleArray(options) })
 			updateBackgroundColor()
 		}
 	}, [currentWord, options, isFlipped, isGameOver])
 
-	// Функция для выбора случайного цвета из пула
 	const updateBackgroundColor = () => {
 		const newColor = colorPool[Math.floor(Math.random() * colorPool.length)]
 		setBgColor(newColor)
@@ -54,7 +63,7 @@ export const Card: React.FC = () => {
 				checkAnswer(answer)
 
 				setTimeout(() => {
-					setContent({ word: currentWord, options })
+					setContent({ word: currentWord, options: shuffleArray(options) })
 					gsap.to(cardRef.current, {
 						rotationY: 0,
 						duration: 0.5,

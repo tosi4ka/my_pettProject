@@ -33,7 +33,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	const [currentWord, setCurrentWord] = useState('')
 	const [options, setOptions] = useState<string[]>([])
 
-	// Функция для загрузки списка слов с сервера
 	const fetchWords = async () => {
 		try {
 			const response = await axios.get('http://localhost:3001/api/questions')
@@ -43,37 +42,48 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 		}
 	}
 
-	// Загрузка данных с сервера при монтировании компонента
 	useEffect(() => {
 		fetchWords()
 	}, [])
 
-	// Обновление текущего слова и вариантов при изменении `currentIndex`
 	useEffect(() => {
 		if (wordsList.length > 0 && currentIndex < wordsList.length) {
 			setCurrentWord(wordsList[currentIndex].word)
 			setOptions(wordsList[currentIndex].options)
+		} else {
+			console.warn('Invalid currentIndex or wordsList is empty')
 		}
 	}, [wordsList, currentIndex])
 
 	const checkAnswer = (answer: string) => {
-		if (isGameOver) return // Остановка, если игра закончена
+		if (isGameOver) return
 
-		if (wordsList[currentIndex].correctAnswer === answer) {
-			setScore(score + 1)
-			if (score + 1 >= 5) {
-				setLevel(level + 1)
-				setScore(0)
-			}
-		} else {
-			setScore(0) // Сброс счёта при неправильном ответе
+		if (wordsList.length === 0 || currentIndex >= wordsList.length) {
+			console.warn('Words list is not ready or currentIndex is out of bounds')
+			return
 		}
 
-		// Переход к следующему слову или завершение игры
-		if (currentIndex < wordsList.length - 1) {
-			setCurrentIndex(currentIndex + 1)
+		if (wordsList[currentIndex]?.correctAnswer === answer) {
+			setScore(prevScore => {
+				const newScore = prevScore + 1
+
+				if (newScore >= 5) {
+					setLevel(prevLevel => prevLevel + 1)
+					console.log('Level up! New level:', level + 1)
+					return 0
+				}
+				return newScore
+			})
 		} else {
-			setIsGameOver(true) // Установка флага окончания игры
+			console.log('Wrong answer! Score remains the same')
+		}
+
+		// Переходим к следующему вопросу
+		if (currentIndex < wordsList.length - 1) {
+			setCurrentIndex(prevIndex => prevIndex + 1)
+		} else {
+			console.log('Game over!')
+			setIsGameOver(true)
 		}
 	}
 
