@@ -9,10 +9,10 @@
 
 .cardBackground {
 	position: absolute;
-	width: 100%; /* Устанавливаем 100%, чтобы заполнить контейнер */
+	width: 100%;
 	height: 100%;
 	border-radius: 10px;
-	background-color: #ffffff; /* Начальный цвет */
+	background-color: #ffffff;
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 	transition: background-color 0.5s ease;
 	z-index: 1;
@@ -34,7 +34,7 @@
 .cardFront,
 .cardBack {
 	position: absolute;
-	width: 57.9vw; /* Задаем единые размеры контейнеру */
+	width: 57.9vw;
 	height: 72.5vh;
 	backface-visibility: hidden;
 	display: flex;
@@ -52,4 +52,44 @@
 	background-color: #e0e0e0;
 	text-align: center;
 	font-weight: bold;
+}
+
+.cardContent {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+.cartOptions {
+	display: grid;
+	grid-template-columns: 1.5fr 1.5fr 1.5fr auto;
+	list-style: outside none none;
+	padding: 0;
+	gap: 20px;
+	justify-items: center;
+}
+
+.contentText {
+	font-family: 'Bebas+Neue', sans-serif;
+	font-size: 72px;
+}
+
+.chooseOption {
+	width: 120px;
+	height: 50px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-family: 'Inconsolata', sans-serif;
+}
+
+.chooseOption:hover {
+	border: none;
+	border-radius: 10px;
+	background-color: lightsalmon;
+	color: purple;
 }

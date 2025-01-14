@@ -40,15 +40,15 @@ export const Card: React.FC = () => {
 			setBgColor('#ffffff')
 		} else {
 			setContent({ word: currentWord, options: shuffleArray(options) })
-			updateBackgroundColor()
+			// updateBackgroundColor()
 		}
 	}, [currentWord, options, isFlipped, isGameOver])
 
-	const updateBackgroundColor = () => {
-		const newColor = colorPool[Math.floor(Math.random() * colorPool.length)]
-		setBgColor(newColor)
-		gsap.to(backgroundRef.current, { backgroundColor: newColor, duration: 0.5 })
-	}
+	// const updateBackgroundColor = () => {
+	// 	const newColor = colorPool[Math.floor(Math.random() * colorPool.length)]
+	// 	setBgColor(newColor)
+	// 	gsap.to(backgroundRef.current, { backgroundColor: newColor, duration: 0.5 })
+	// }
 
 	const handleAnswerClick = (answer: string) => {
 		if (isGameOver) return
@@ -90,16 +90,20 @@ export const Card: React.FC = () => {
 					) : isGameOver ? (
 						<p>C'est fini</p>
 					) : (
-						<>
-							<h3>{content.word}</h3>
-							<ul>
+						<div className={style.cardContent}>
+							<h3 className={style.contentText}>{content.word}</h3>
+							<ul className={style.cartOptions}>
 								{content.options.map(option => (
-									<li key={option} onClick={() => handleAnswerClick(option)}>
+									<li
+										key={option}
+										onClick={() => handleAnswerClick(option)}
+										className={style.chooseOption}
+									>
 										{option}
 									</li>
 								))}
 							</ul>
-						</>
+						</div>
 					)}
 				</div>
 			</div>

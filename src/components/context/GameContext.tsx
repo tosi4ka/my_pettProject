@@ -11,9 +11,12 @@ type GameState = {
 	currentWord: string
 	options: string[]
 	score: number
-	level: number
+	level: string
+	complexity: number
 	checkAnswer: (answer: string) => void
 	isGameOver: boolean
+	setLevel: (level: string) => void
+	setComplexity: (complexity: number) => void
 }
 
 const GameContext = createContext<GameState | undefined>(undefined)
@@ -24,7 +27,8 @@ type GameProviderProps = {
 
 export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	const [score, setScore] = useState(0)
-	const [level, setLevel] = useState(1)
+	const [level, setLevel] = useState<string>('beginner')
+	const [complexity, setComplexity] = useState<number>(1)
 	const [currentIndex, setCurrentIndex] = useState(0)
 	const [isGameOver, setIsGameOver] = useState(false)
 	const [wordsList, setWordsList] = useState<
@@ -33,18 +37,24 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	const [currentWord, setCurrentWord] = useState('')
 	const [options, setOptions] = useState<string[]>([])
 
-	const fetchWords = async () => {
+	const fetchWords = async (
+		currentLevel: string,
+		currentComplexity: number
+	) => {
 		try {
-			const response = await axios.get('http://localhost:3001/api/questions')
+			const response = await axios.get(
+				`http://localhost:3001/api/questions?level=${currentLevel}&complexity=${currentComplexity}`
+			)
 			setWordsList(response.data)
+			setCurrentIndex(0)
 		} catch (error) {
 			console.error('Error fetching words list:', error)
 		}
 	}
 
 	useEffect(() => {
-		fetchWords()
-	}, [])
+		fetchWords(level, complexity)
+	}, [level, complexity])
 
 	useEffect(() => {
 		if (wordsList.length > 0 && currentIndex < wordsList.length) {
@@ -68,8 +78,12 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 				const newScore = prevScore + 1
 
 				if (newScore >= 5) {
-					setLevel(prevLevel => prevLevel + 1)
-					console.log('Level up! New level:', level + 1)
+					setLevel(prevLevel => {
+						if (prevLevel === 'beginner') return 'intermediate'
+						if (prevLevel === 'intermediate') return 'advanced'
+						return prevLevel
+					})
+					console.log('Level up! New level:', level)
 					return 0
 				}
 				return newScore
@@ -78,7 +92,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 			console.log('Wrong answer! Score remains the same')
 		}
 
-		// Переходим к следующему вопросу
 		if (currentIndex < wordsList.length - 1) {
 			setCurrentIndex(prevIndex => prevIndex + 1)
 		} else {
@@ -89,12 +102,22 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
 	useEffect(() => {
 		localStorage.setItem('score', score.toString())
-		localStorage.setItem('level', level.toString())
+		localStorage.setItem('level', level)
 	}, [score, level])
 
 	return (
 		<GameContext.Provider
-			value={{ currentWord, options, score, level, checkAnswer, isGameOver }}
+			value={{
+				currentWord,
+				options,
+				score,
+				level,
+				complexity,
+				checkAnswer,
+				isGameOver,
+				setLevel,
+				setComplexity,
+			}}
 		>
 			{children}
 		</GameContext.Provider>
