@@ -6,6 +6,11 @@ const questionSchema = new mongoose.Schema({
 	word: { type: String, required: true },
 	options: { type: [String], required: true },
 	correctAnswer: { type: String, required: true },
+	type: {
+		type: String,
+		required: true,
+		enum: ['translation', 'fill-in-the-blank'],
+	},
 })
 
 const Question = mongoose.model('Question', questionSchema)
