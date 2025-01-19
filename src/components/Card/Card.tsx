@@ -8,7 +8,15 @@ import style from './Card.module.css'
 import { initializeCardContent, updateBackgroundColor } from './cardHelpers'
 
 export const Card: React.FC<CardProps> = ({ onRestart }) => {
-	const { currentWord, options, checkAnswer, isGameOver, score } = useGame()
+	const {
+		currentWord,
+		options,
+		checkAnswer,
+		isGameOver,
+		score,
+		type,
+		correctAnswer,
+	} = useGame()
 	const cardRef = useRef<HTMLDivElement>(null)
 	const backgroundRef = useRef<HTMLDivElement>(null)
 
@@ -86,6 +94,8 @@ export const Card: React.FC<CardProps> = ({ onRestart }) => {
 							word={content.word}
 							options={content.options}
 							onAnswerClick={handleAnswerClick}
+							type={type}
+							correctAnswer={correctAnswer}
 						/>
 					)}
 				</div>

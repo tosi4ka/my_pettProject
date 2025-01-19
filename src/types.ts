@@ -28,6 +28,8 @@ export interface GameState {
 		selectedLevel: string,
 		selectedComplexity: string
 	) => Promise<void>
+	type: string
+	correctAnswer: string
 }
 
 export type GameProviderProps = {
@@ -55,4 +57,6 @@ export interface CardContentProps {
 	word: string
 	options: string[]
 	onAnswerClick: (answer: string) => void
+	type: string
+	correctAnswer: string
 }

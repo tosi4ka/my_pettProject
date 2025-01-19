@@ -11,10 +11,12 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	const [currentIndex, setCurrentIndex] = useState(0)
 	const [isGameOver, setIsGameOver] = useState(false)
 	const [wordsList, setWordsList] = useState<
-		{ word: string; options: string[]; correctAnswer: string }[]
-	>([])
+		{ word: string; options: string[]; correctAnswer: string; type: string }[]
+	>([]) // Добавлено поле `type`
 	const [currentWord, setCurrentWord] = useState('')
 	const [options, setOptions] = useState<string[]>([])
+	const [questionType, setQuestionType] = useState<string>('') // Тип текущего вопроса
+	const [correctAnswer, setCorrectAnswer] = useState<string>('') // Правильный ответ для `fill-in-the-blank`
 	const [isRiskMode, setIsRiskMode] = useState(false)
 	const [isGameInitialized, setIsGameInitialized] = useState(false)
 
@@ -86,21 +88,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 		const isCorrect = wordsList[currentIndex]?.correctAnswer === answer
 
 		if (isCorrect) {
-			setScore(prevScore => {
-				const newScore = prevScore + 1
-
-				// Проверяем завершение уровня
-				if (newScore >= 5 && currentIndex === wordsList.length - 1) {
-					setLevel(prevLevel => {
-						if (prevLevel === 'beginner') return 'intermediate'
-						if (prevLevel === 'intermediate') return 'advanced'
-						return prevLevel
-					})
-					return 0 // Сброс счёта для нового уровня
-				}
-
-				return newScore
-			})
+			setScore(prevScore => prevScore + 1)
+		} else {
+			console.log('Incorrect answer:', answer)
 		}
 
 		if (currentIndex < wordsList.length - 1) {
@@ -119,9 +109,13 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 		) {
 			setCurrentWord(wordsList[currentIndex].word)
 			setOptions(wordsList[currentIndex].options)
+			setQuestionType(wordsList[currentIndex].type) // Устанавливаем тип вопроса
+			setCorrectAnswer(wordsList[currentIndex].correctAnswer) // Устанавливаем правильный ответ
 		} else {
 			setCurrentWord('')
 			setOptions([])
+			setQuestionType('')
+			setCorrectAnswer('')
 		}
 	}, [wordsList, currentIndex, isGameInitialized])
 
@@ -140,6 +134,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 				isRiskMode,
 				activateRiskMode: () => setIsRiskMode(true),
 				startGame,
+				type: questionType,
+				correctAnswer,
 			}}
 		>
 			{children}
